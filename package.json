@@ -1,0 +1,17 @@
+{
+  "name": "golem-cuda-samples",
+  "version": "1.0.0",
+  "description": "Sample how to compile and run cuda samples on Golem",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/bandwidth.mjs"
+  },
+  "dependencies": {
+    "@golem-sdk/golem-js": "^3.1",
+    "@golem-sdk/pino-logger": "^1.1",
+    "dotenv": "^16.4.5"
+  },
+  "author": "",
+  "license": "ISC"
+}

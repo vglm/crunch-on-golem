@@ -1,6 +1,6 @@
 import { GolemNetwork } from "@golem-sdk/golem-js";
 import { pinoPrettyLogger } from "@golem-sdk/pino-logger";
-
+import { writeFile } from 'fs/promises';
 
 
 (async () => {
@@ -55,8 +55,11 @@ import { pinoPrettyLogger } from "@golem-sdk/pino-logger";
                 });
             for (let i = 0; i < 10; i++) {
                 await exe.run('profanity_cuda -b 10')
-                    .then((res) => {
+                    .then(async (res) => {
                         for (let line of res.stdout.split('\n')) {
+                            if (line.split(',').length === 4) {
+                                await writeFile(`output/addr_${line.split(',')[1]}.csv`, line.trim(), 'utf8');
+                            }
                             console.log(line)
                         }
                         console.log(res)

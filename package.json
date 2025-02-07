@@ -8,7 +8,7 @@
     "start": "node src/bandwidth.mjs"
   },
   "dependencies": {
-    "@golem-sdk/golem-js": "^3.1",
+    "@golem-sdk/golem-js": "git://github.com/golemfactory/golem-js.git#94f0b5591ff449c89091c5dfee4640b953525ff4",
     "@golem-sdk/pino-logger": "^1.1",
     "dotenv": "^16.4.5"
   },

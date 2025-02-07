@@ -18,7 +18,7 @@ import { writeFile } from 'fs/promises';
 
         const allocation = await glm.payment.createAllocation({
             budget: 10,
-            expirationSec: 3600,
+            expirationSec: 60*20,
             paymentPlatform: 'erc20-holesky-tglm'
         });
 
@@ -54,7 +54,7 @@ import { writeFile } from 'fs/promises';
                     console.log(res)
                 });
             for (let i = 0; i < 10; i++) {
-                await exe.run('profanity_cuda -b 10')
+                await exe.run('profanity_cuda -b 50')
                     .then(async (res) => {
                         for (let line of res.stdout.split('\n')) {
                             if (line.split(',').length === 4) {

@@ -19,7 +19,7 @@ import { writeFile } from 'fs/promises';
         const allocation = await glm.payment.createAllocation({
             budget: 10,
             expirationSec: 60*20,
-            paymentPlatform: 'erc20-holesky-tglm'
+            paymentPlatform: 'erc20-polygon-glm'
         });
 
         const order = {

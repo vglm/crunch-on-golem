@@ -10,7 +10,8 @@
   "dependencies": {
     "@golem-sdk/golem-js": "git://github.com/golemfactory/golem-js.git#94f0b5591ff449c89091c5dfee4640b953525ff4",
     "@golem-sdk/pino-logger": "^1.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "axios": "^1.7.9"
   },
   "author": "",
   "license": "ISC"

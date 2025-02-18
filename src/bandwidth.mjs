@@ -98,7 +98,7 @@ async function updateJob(jobId, upload_many, reportedHashes, reportedCost) {
                 },
             },
             market: {
-                rentHours: 0.1,
+                rentHours: 0.2,
                 pricing: {
                     model: "linear",
                     maxStartPrice: 0.0,

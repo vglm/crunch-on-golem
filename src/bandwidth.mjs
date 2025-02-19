@@ -104,7 +104,7 @@ function timeout(ms) {
                 },
             },
             market: {
-                rentHours: 0.1,
+                rentHours: 0.2,
                 pricing: {
                     model: "linear",
                     maxStartPrice: 0.0,

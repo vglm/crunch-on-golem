@@ -70,6 +70,12 @@ async function updateJob(jobId, upload_many, reportedHashes, reportedCost) {
     return data;
 }
 
+function timeout(ms) {
+    return new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms)
+    );
+}
+
 (async () => {
     /*while(true)*/ {
         const glm = new GolemNetwork({
@@ -113,7 +119,10 @@ async function updateJob(jobId, upload_many, reportedHashes, reportedCost) {
 
         try {
             await glm.connect();
-            const rental = await glm.oneOf({ order });
+            const rental = await Promise.race([
+                glm.oneOf({ order }),
+                timeout(60000) // 60 seconds timeout
+            ]);
 
             const jobId = await openJob(
                 requestorIdentity,

@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/bandwidth.mjs",
-    "scan": "node src/crunch.mjs"
+    "crunch": "node src/crunch.mjs"
   },
   "dependencies": {
-    "@golem-sdk/golem-js": "git://github.com/golemfactory/golem-js.git#94f0b5591ff449c89091c5dfee4640b953525ff4",
+    "@golem-sdk/golem-js": "git://github.com/golemfactory/golem-js.git#3f33d82d5d512b21ee91cb1d90cb863c2caa4b27",
     "@golem-sdk/pino-logger": "^1.1",
     "dotenv": "^16.4.5",
     "axios": "^1.7.9",

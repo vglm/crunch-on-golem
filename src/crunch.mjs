@@ -11,6 +11,7 @@ dotenv.config();
 const ONE_PASS_TIME = parseInt(process.env.ONE_PASS_TIME ?? "60");
 const NUMBER_OF_PASSES =  parseInt(process.env.NUMBER_OF_PASSES ?? "10");
 const CRUNCHER_VERSION = process.env.CRUNCHER_VERSION ?? "prod-12.4.1";
+const CRUNCHER_ALLOCATION = parseFloat(process.env.CRUNCHER_ALLOCATION ?? "0.04");
 
 //get from env
 const UPLOAD_URL_BASE = process.env.UPLOAD_URL_BASE ?? "https://addressology.ovh";
@@ -80,13 +81,12 @@ function timeout(ms) {
     );
 }
 
-
 (async () => {
 
     const glm = new GolemNetwork();
 
-    const RENTAL_DURATION_HOURS = 10 / 60;
-    const ALLOCATION_DURATION_HOURS = RENTAL_DURATION_HOURS + 0.25;
+    const RENTAL_DURATION_HOURS = (ONE_PASS_TIME * NUMBER_OF_PASSES) / 3600 + 0.1;
+    const ALLOCATION_DURATION_HOURS = RENTAL_DURATION_HOURS + 0.1;
 
     console.assert(
         ALLOCATION_DURATION_HOURS > RENTAL_DURATION_HOURS,
@@ -97,11 +97,13 @@ function timeout(ms) {
     try {
         await glm.connect();
 
+        console.log("Allocation duration: ", ALLOCATION_DURATION_HOURS, " hours");
+        console.log("Rental duration: ", RENTAL_DURATION_HOURS, " hours");
         // Define the order that we're going to place on the market
 
         const allocation = await glm.payment.createAllocation({
-            budget: 0.04,
-            expirationSec: 60*20,
+            budget: CRUNCHER_ALLOCATION,
+            expirationSec: Math.round(ALLOCATION_DURATION_HOURS * 3600),
             paymentPlatform: 'erc20-polygon-glm'
         });
         const requestorIdentity = allocation.address;
@@ -114,7 +116,6 @@ function timeout(ms) {
                 },
             },
             market: {
-                // We're only going to rent the provider for 5 minutes max
                 rentHours: RENTAL_DURATION_HOURS,
                 pricing: {
                     model: "linear",

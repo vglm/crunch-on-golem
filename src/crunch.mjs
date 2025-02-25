@@ -262,6 +262,8 @@ function timeout(ms) {
                     }
                     totalJobComputed += biggestCompute;
 
+                    console.log("Received stdout bytes: ", res.stdout.length);
+
                     for (let line of res.stdout.split('\n')) {
                         try {
                             line = line.trim();

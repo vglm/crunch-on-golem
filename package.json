@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/bandwidth.mjs"
+    "start": "node src/bandwidth.mjs",
+    "scan": "node src/crunch.mjs"
   },
   "dependencies": {
     "@golem-sdk/golem-js": "git://github.com/golemfactory/golem-js.git#94f0b5591ff449c89091c5dfee4640b953525ff4",
     "@golem-sdk/pino-logger": "^1.1",
     "dotenv": "^16.4.5",
-    "axios": "^1.7.9"
+    "axios": "^1.7.9",
+    "rxjs": "^7.8.2"
   },
   "author": "",
   "license": "ISC"

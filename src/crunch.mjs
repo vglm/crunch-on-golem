@@ -242,7 +242,7 @@ function timeout(ms) {
         let promises = [];
         let totalJobComputed = 0;
         for (let passNo = 0; passNo < NUMBER_OF_PASSES; passNo++) {
-            await exe.run(`profanity_cuda -b ${ONE_PASS_TIME} -z 79dc6f4a3a37adac9dbdf7073823e5596e96ec887eaa16cc01a531d04afd7e442d1e4606800b12d393e47146a5252fef6dced0492687b714515b698fa271c58e`)
+            await exe.run(`profanity_cuda -k 64 -b ${ONE_PASS_TIME} -z 79dc6f4a3a37adac9dbdf7073823e5596e96ec887eaa16cc01a531d04afd7e442d1e4606800b12d393e47146a5252fef6dced0492687b714515b698fa271c58e`)
                 .then(async (res) => {
                     const multipleResults = [];
 

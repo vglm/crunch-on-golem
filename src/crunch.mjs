@@ -104,15 +104,15 @@ function timeout(ms) {
         const allocation = await glm.payment.createAllocation({
             budget: CRUNCHER_ALLOCATION,
             expirationSec: Math.round(ALLOCATION_DURATION_HOURS * 3600),
-            paymentPlatform: 'erc20-polygon-glm'
+            paymentPlatform: 'erc20-holesky-tglm'
         });
         const requestorIdentity = allocation.address;
         const order = {
             demand: {
                 workload: {
                     imageTag: `nvidia/cuda-x-crunch:${CRUNCHER_VERSION}`,
-                    capabilities: ["!exp:gpu"],
-                    engine: "vm-nvidia",
+                    capabilities: [],
+                    engine: "dummy",
                 },
             },
             market: {

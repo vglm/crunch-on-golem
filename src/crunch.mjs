@@ -222,6 +222,8 @@ function timeout(ms) {
 
         const exe = await glm.activity.createExeUnit(activity);
 
+        console.log("Exe unit created")
+
         const jobId = await openJob(
             requestorIdentity,
             agreement.provider.id,
@@ -229,6 +231,7 @@ function timeout(ms) {
             agreement.provider.name,
             "extra"
         );
+        console.log("Job opened")
 
         await exe.run('chmod +x /usr/local/bin/profanity_cuda')
             .then((res) => {

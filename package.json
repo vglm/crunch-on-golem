@@ -9,7 +9,7 @@
     "crunch": "node src/crunch.mjs"
   },
   "dependencies": {
-    "@golem-sdk/golem-js": "git://github.com/golemfactory/golem-js.git#3f33d82d5d512b21ee91cb1d90cb863c2caa4b27",
+    "@golem-sdk/golem-js": "git://github.com/golemfactory/golem-js.git#8ddd3a26887040b74ab4ffc1fcee9d14fdbbda1a",
     "@golem-sdk/pino-logger": "^1.1",
     "dotenv": "^16.4.5",
     "axios": "^1.7.9",

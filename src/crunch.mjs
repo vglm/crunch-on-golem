@@ -1,7 +1,7 @@
 /**
  * This example demonstrates how to scan the market for providers that meet specific requirements.
  */
-import { GolemNetwork } from "@golem-sdk/golem-js";
+import {GolemNetwork, sleep} from "@golem-sdk/golem-js";
 import {filter, last, map, scan, switchMap, take, takeUntil, tap, timer} from "rxjs";
 import dotenv from 'dotenv';
 import axios from "axios";
@@ -233,19 +233,10 @@ function timeout(ms) {
         );
         console.log("Job opened")
 
-        await exe.run('chmod +x /usr/local/bin/profanity_cuda')
-            .then((res) => {
-
-                console.log(res)
-            });
-        await exe.run('nvidia-smi')
-            .then((res) => {
-                console.log(res)
-            });
         let promises = [];
         let totalJobComputed = 0;
         for (let passNo = 0; passNo < NUMBER_OF_PASSES; passNo++) {
-            await exe.run(`profanity_cuda -k 64 -b ${ONE_PASS_TIME} -z 79dc6f4a3a37adac9dbdf7073823e5596e96ec887eaa16cc01a531d04afd7e442d1e4606800b12d393e47146a5252fef6dced0492687b714515b698fa271c58e`)
+            await exe.run("set_hash", [`${passNo * 1.22}`])
                 .then(async (res) => {
                     const multipleResults = [];
 

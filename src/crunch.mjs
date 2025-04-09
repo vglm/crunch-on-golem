@@ -14,8 +14,11 @@ const CRUNCHER_VERSION = process.env.CRUNCHER_VERSION ?? "prod-12.4.1";
 const CRUNCHER_ALLOCATION = parseFloat(process.env.CRUNCHER_ALLOCATION ?? "0.04");
 
 //get from env
-const UPLOAD_URL_BASE = process.env.UPLOAD_URL_BASE ?? "https://addressology.ovh";
+const UPLOAD_URL_BASE = process.env.UPLOAD_URL_BASE ?? "https://addressology.net";
 
+function sleep_secs(seconds) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
 
 async function openJob(requestorId, provNodeId, provRewardAddr, provName, provExtraInfo) {
     let createJob = {
@@ -61,17 +64,17 @@ async function updateJob(jobId, upload_many, reportedHashes, reportedCost) {
         },
         "data": upload_many
     };
+    console.log(upload_many);
 
     let body = JSON.stringify(update);
     console.log("Update data size: " + body.length + " Total compute: " + reportedHashes);
-    const response = await axios.post(`${UPLOAD_URL_BASE}/api/fancy/new_many2`, update, {
+    const response = await axios.post(`${UPLOAD_URL_BASE}/api/fancy/new_many`, update, {
         headers: {
             'Content-Type': 'application/json',
         },
     });
 
     const data = response.data;
-    console.log(data);
     return data;
 }
 
@@ -121,7 +124,6 @@ function timeout(ms) {
                     model: "linear",
                     maxStartPrice: 0.0,
                     maxCpuPerHourPrice: 0.0,
-                    maxEnvPerHourPrice: 2.0,
                 },
             },
             payment: {
@@ -235,50 +237,81 @@ function timeout(ms) {
 
         let promises = [];
         let totalJobComputed = 0;
+        let jobScore = 0.0;
+        const factory = "0x9E3F8eaE49E442A323EF2094f277Bf62752E6995";
+        {
+            let res = await exe.run("set_work_target", ["factory", factory]);
+
+            if (res.result !== "Ok") {
+                console.log(`Command set_work_target failed with message: ${res.message}`);
+                throw `Command set_work_target failed with message: ${res.message}`;
+            }
+        }
+
+        {
+            let res = await exe.run("start_work", []);
+
+            if (res.result !== "Ok") {
+                console.log(`Command start_work failed with message: ${res.message}`);
+                throw `Command start_work failed with message: ${res.message}`;
+            }
+        }
+
         for (let passNo = 0; passNo < NUMBER_OF_PASSES; passNo++) {
-            await exe.run("set_hash", [`${passNo * 1.22}`])
-                .then(async (res) => {
-                    const multipleResults = [];
+            let res = await exe.run("take_results", []);
 
-                    let biggestCompute = 0;
-                    for (let line of res.stderr.split('\n')) {
-                        console.log(line);
-                        if (line.includes('Total compute')) {
-                            try {
-                                const totalCompute = line.split('Total compute ')[1].trim().split(' GH')[0];
-                                const totalComputeFloatGh = parseFloat(totalCompute);
-                                biggestCompute = totalComputeFloatGh * 1e9;
-                                //console.log("Total compute: " + totalCompute);
-                            } catch (e) {
-                                console.error(e);
-                            }
-                        }
-                    }
-                    totalJobComputed += biggestCompute;
+            if (res.result !== "Ok") {
+                console.log(`Command take_results failed with message: ${res.message}`);
+                throw `Command take_results failed with message: ${res.message}`;
+            }
+            let message = res.stdout;
+            console.log("Received message: " + message);
 
-                    console.log("Received stdout bytes: ", res.stdout.length);
+            {
+                //check message length
+                if (message.length % 32 !== 0) {
+                    console.log(`Received wrong message length: ${res.message.length}, Should be multiple of 32`);
+                    throw "Received wrong message length: ${res.message.length}, Should be multiple of 32";
+                }
+                const multipleResults = [];
+                for (let place = 0; place < message.length; place += 32) {
+                    let salt = message.slice(place, place + 32);
+                    multipleResults.push({
+                        "salt": '0x' + [...salt].map(b => b.toString(16).padStart(2, '0')).join(''),
+                        "address": null,
+                        "factory": factory
+                    });
+                }
+                if (multipleResults.length > 0) {
+                    let data = await updateJob(jobId, multipleResults, totalJobComputed, 0);
 
-                    for (let line of res.stdout.split('\n')) {
-                        try {
-                            line = line.trim();
-                            if (line.startsWith('0x')) {
-                                const salt = line.split(',')[0];
-                                const addr = line.split(',')[1];
-                                const factory = line.split(',')[2];
-                                multipleResults.push({
-                                    "salt": salt,
-                                    "address": addr,
-                                    "factory": factory
-                                });
-                            }
-                        } catch (e) {
-                            console.error(e);
-                        }
-                    }
-                    promises.push(updateJob(jobId, multipleResults, totalJobComputed, 0));
-                });
+                    //console.log(`Uploaded addresses - received ${JSON.stringify(data)}`);
+                    jobScore += data['totalScore'];
+
+                }
+            }
+
+            await sleep_secs(5.0);
+            {
+                //const thJobScore = jobScore / 1e12;
+
+                //const thJobScoreStr =
+                //console.log("Updating job score with value: " + jobScore);
+                //let _res = await exe.run("set_hash", [thJobScore]);
+
+            }
 
         }
+
+        {
+            let res = await exe.run("stop_work", []);
+
+            if (res.result !== "Ok") {
+                console.log(`Command start_work failed with message: ${res.message}`);
+                throw `Command start_work failed with message: ${res.message}`;
+            }
+        }
+
         // We're done, let's clean up provider
         // First we need to destroy the activity
         await glm.activity.destroyActivity(activity)

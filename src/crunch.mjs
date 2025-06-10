@@ -10,6 +10,7 @@ dotenv.config();
 
 const ONE_PASS_TIME = parseInt(process.env.ONE_PASS_TIME ?? "60");
 const NUMBER_OF_PASSES =  parseInt(process.env.NUMBER_OF_PASSES ?? "10");
+const PASS_EVERY_SECONDS =  parseInt(process.env.PASS_EVERY_SECONDS ?? "30");
 const CRUNCHER_VERSION = process.env.CRUNCHER_VERSION ?? "prod-12.4.1";
 const CRUNCHER_ALLOCATION = parseFloat(process.env.CRUNCHER_ALLOCATION ?? "0.04");
 
@@ -258,7 +259,7 @@ function timeout(ms) {
         }
 
         for (let passNo = 0; passNo < NUMBER_OF_PASSES; passNo++) {
-            let res = await exe.run("take_results", []);
+            let res = await exe.run("set_hash_and_take_results", [(jobScore / 1e12).toFixed(2)]);
 
             if (res.result !== "Ok") {
                 console.log(`Command take_results failed with message: ${res.message}`);
@@ -291,7 +292,7 @@ function timeout(ms) {
                 }
             }
 
-            await sleep_secs(5.0);
+            await sleep_secs(PASS_EVERY_SECONDS);
             {
                 //const thJobScore = jobScore / 1e12;
 

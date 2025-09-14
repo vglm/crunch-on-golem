@@ -59,7 +59,7 @@ async function updateJob(jobId, upload_many, reportedHashes, reportedCost) {
 
     let body = JSON.stringify(update);
     console.log("Update data size: " + body.length + " Total compute: " + reportedHashes);
-    const response = await axios.post(`${UPLOAD_URL_BASE}/api/fancy/new_many2`, update, {
+    const response = await axios.post(`${UPLOAD_URL_BASE}/api/fancy/new_many`, update, {
         headers: {
             'Content-Type': 'application/json',
         },
